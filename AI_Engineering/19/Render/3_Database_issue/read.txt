@@ -1,0 +1,116 @@
+# Breaking Down the Lesson
+
+The professor is teaching about **deployment and database problems**. Here's everything he said, clearly explained:
+
+---
+
+## 1. The Typo Fix & Redeployment
+
+He fixed a typo in his app and showed how redeploying works:
+
+1. Fix the code locally
+2. Push to GitHub
+3. Render.com **automatically redeploys** — that's it
+
+---
+
+## 2. The Big Problem: Database Gets Wiped on Every Redeploy
+
+After redeploying, **all his data disappeared**. Here's why:
+
+### Render has an **Ephemeral File System**
+
+> "Ephemeral" = temporary. It resets every time the app redeploys.
+
+His database was **SQLite** — which is just a file sitting in the project folder:
+
+```
+my-app/
+├── index.html
+├── server.js
+└── database.sqlite   ← this is just a FILE. It gets wiped on redeploy.
+```
+
+Every redeploy = fresh code from GitHub = empty database again. Users lose all their data. Bad.
+
+---
+
+## 3. Two Solutions
+
+### ✅ Solution 1: Persistent Disk
+A special storage area that **doesn't get wiped** on redeploy. Available on Render's paid plan.
+
+```
+GitHub code  →  Render server (gets replaced on redeploy)
+                     +
+             Persistent Disk  ← database lives here, never wiped
+```
+
+### ✅ Solution 2 (what he chose): Switch from SQLite → PostgreSQL
+
+---
+
+## 4. Why SQLite is Bad for Production Web Apps
+
+### Problem 1: Write Locking
+SQLite locks the **entire database** when one user writes to it:
+
+```
+User A writes  →  database LOCKED  →  User B has to wait
+                                    →  User C has to wait
+                                    →  User D has to wait
+```
+
+With millions of users, this becomes a massive bottleneck.
+
+### Problem 2: No Clustering
+If your app gets huge, you run multiple servers. But SQLite is a local file, so each server gets its own copy:
+
+```
+Server 1 → database.sqlite (has User A's data)
+Server 2 → database.sqlite (has User B's data)  ← different data! 💀
+Server 3 → database.sqlite (has User C's data)
+```
+
+This is a complete mess — your data is fragmented across servers.
+
+---
+
+## 5. Why PostgreSQL Fixes Everything
+
+### Concurrent writes — no problem:
+```
+User A writes ─┐
+User B writes ─┤→ PostgreSQL handles all of them simultaneously ✅
+User C writes ─┘
+```
+
+### Works with multiple servers:
+```
+Server 1 ─┐
+Server 2 ─┤→ ONE shared PostgreSQL database ✅
+Server 3 ─┘
+```
+
+---
+
+## 6. When IS SQLite actually good?
+
+The prof defended SQLite — it's great for:
+
+| Use Case | Why SQLite Works |
+|---|---|
+| Mobile apps | One user at a time |
+| Desktop apps | Single machine |
+| IoT devices | Low/no concurrency |
+| Simple blogs | Rare writes |
+
+**Rule of thumb:** *One machine, one user at a time → SQLite is perfect.*
+
+---
+
+## What's Coming Next
+
+He's going to:
+1. **Migrate the app from SQLite → PostgreSQL**
+2. Introduce **staging** — a concept where you test changes on a "fake production" environment before pushing to the real one

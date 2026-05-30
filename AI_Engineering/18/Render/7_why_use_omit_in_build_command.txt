@@ -1,0 +1,20 @@
+🔍 Why use npm ci --omit=dev in the build step?
+npm ci ensures a clean, reproducible install:
+
+Deletes node_modules and installs exactly what’s in package-lock.json.
+
+Faster and more deterministic than npm install.
+
+--omit=dev skips devDependencies:
+
+In production builds, you don’t need testing frameworks, linters, or local-only tools.
+
+Keeps the container smaller and reduces attack surface.
+
+Ensures only runtime dependencies are present.
+
+In Render’s build phase:
+
+You’re preparing the app for production, so you want only the dependencies required to run the app.
+
+Example: Next.js needs react, react-dom, etc. at runtime, but doesn’t need eslint or jest.

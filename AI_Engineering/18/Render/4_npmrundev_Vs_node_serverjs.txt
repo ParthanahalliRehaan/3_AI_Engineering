@@ -1,0 +1,70 @@
+## ⚙️ `node server.js`
+- **Direct execution**: Runs your file with Node.js.  
+- **No extras**: No hot reload, no scripts, just raw Node.  
+- **Use case**:  
+  - Quick testing.  
+  - Production when you want absolute simplicity.  
+
+---
+
+## 🚀 `npm run dev`
+- **Scripted execution**: Runs whatever is defined under `"dev"` in `package.json`.  
+- **Typical setup**:  
+  ```json
+  {
+    "scripts": {
+      "dev": "nodemon server.js"
+    }
+  }
+  ```
+- **Features**:  
+  - Hot reload (via `nodemon`, `vite`, `next dev`, etc.).  
+  - Developer tooling (debugging, watchers).  
+- **Use case**:  
+  - Development mode.  
+  - Standard in frameworks like Next.js, React, Vue.  
+
+---
+
+## ▶️ `npm start`
+- **Convention for production**: Runs the `"start"` script in `package.json`.  
+- **Typical setup**:  
+  ```json
+  {
+    "scripts": {
+      "start": "node server.js"
+    }
+  }
+  ```
+- **Behavior**:  
+  - By default, `npm start` is shorthand for `node server.js` if no `"start"` script is defined.  
+  - Used by hosting platforms (Heroku, Vercel, Render) to know how to boot your app.  
+- **Use case**:  
+  - Production deployment.  
+  - Standardized entry point across projects.  
+
+---
+
+## 📊 Side-by-side comparison
+
+| Command         | Typical Use | Features | Standard Context |
+|-----------------|-------------|----------|------------------|
+| `node server.js` | Production / quick test | Raw Node execution, no reload | Minimal, direct run |
+| `npm run dev`   | Development | Hot reload, debugging, watchers | Active coding |
+| `npm start`     | Production | Convention, standardized entry | Deployment, hosting |
+
+---
+
+## 🎯 Practical summary
+- **During development** → use **`npm run dev`** (hot reload, tooling).  
+- **For production** → use **`npm start`** (standard convention, hosting compatibility).  
+- **For quick local runs** → `node server.js` works, but it’s not the “standard” way in collaborative projects.  
+
+---
+
+👉 Think of it like this:
+- **`node server.js`** = raw engine start (manual, direct).  
+- **`npm run dev`** = workshop mode (tools, live reload, debugging).  
+- **`npm start`** = showroom mode (standardized, polished, ready for deployment).  
+
+---

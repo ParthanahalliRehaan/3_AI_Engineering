@@ -1,0 +1,106 @@
+---
+
+## 🧩 Core Problem
+When you let an agent call APIs inside a loop, you risk:
+- **Infinite loops** (e.g., `while(true)`).
+- **Excessive API calls** (costing real money).
+- **Hard-to-debug behavior**.
+
+So the solution is to **cap the number of iterations** and add clear logging.
+
+---
+
+## 🔑 Key Concepts in the Script
+
+### 1. **Max Iterations**
+```js
+const MAX_ITERATIONS = 5;
+```
+- Prevents runaway loops.
+- Ensures the agent won’t call the API more than 5 times.
+
+---
+
+### 2. **C-Style For Loop**
+```js
+for (let i = 0; i < MAX_ITERATIONS; i++) {
+   // agent logic here
+}
+```
+- Iterates up to 5 times.
+- Each iteration represents one "step" the agent takes.
+
+---
+
+### 3. **Regex Setup**
+- The script uses regex to detect whether the LLM output contains an **action**.
+- If no action is found → assume the agent is ready to give the **final answer**.
+
+---
+
+### 4. **Early Exit**
+```js
+if (!foundAction) {
+   return responseText;
+}
+```
+- Ends the loop early if the agent signals it’s done.
+- Prevents wasting iterations.
+
+---
+
+### 5. **Transparency with Console Logs**
+The professor added **lots of `console.log` statements** for debugging:
+- Iteration number (`Iteration #1`, `Iteration #2`, etc.).
+- The raw response text.
+- Which function is being called and with what arguments.
+- Final message: `"Agent finished with task"`.
+
+This makes the agent’s reasoning **visible** while testing.
+
+---
+
+### 6. **Async/Await**
+```js
+await agent();
+```
+- Since API calls are asynchronous, you must `await` them.
+- Otherwise, you’ll just see unresolved promises in the console.
+
+---
+
+### 7. **Example Run**
+- **Input:** "What is the current weather in New York City?"
+- **Iteration 1:** Agent decides → `getCurrentWeather("New York City")`.
+- **Iteration 2:** Agent uses the observation → returns `"Sunny, 72°F"`.
+
+- **Input:** "What is the current weather in my location?"
+- **Iteration 1:** Agent decides → `getLocation()`.
+- **Iteration 2:** Uses location → `getCurrentWeather("New York City")`.
+
+- **Input:** "What are some activity ideas this afternoon?"
+- Agent chains multiple steps:
+  1. Get location.
+  2. Get weather.
+  3. Suggest activities based on both.
+
+---
+
+## 🚀 Why This Matters
+You’ve basically built a **mini-agent framework**:
+- It **perceives** (reads input).
+- It **acts** (calls functions).
+- It **reflects** (uses results in the next iteration).
+- It **decides when to stop** (final answer).
+
+This is the foundation of **iterative agents** like AutoGPT, but simplified.
+
+---
+
+## 📌 Next Step (Professor’s Hint)
+Instead of manually parsing strings with regex, you can use **OpenAI’s function calling**:
+- Define functions (`getWeather`, `getLocation`).
+- Let the model decide when to call them.
+- No need for regex hacks — the model outputs structured JSON.
+
+---

@@ -1,0 +1,24 @@
+A **sandboxed payment gateway** is essentially a safe, simulated environment provided by payment gateway services (like Stripe, PayPal, Razorpay, etc.) where developers can test transactions without using real money. Think of it as a "practice mode" for payments.  
+
+Here’s the breakdown:
+
+### 🔒 What “sandboxed” means
+- **Sandbox = isolated test environment**  
+  It mimics the real payment gateway but is completely separate from live financial systems.  
+- **No real money involved**  
+  Transactions in sandbox mode are fake, so you can experiment freely.  
+- **Safe for debugging**  
+  Developers can test integrations, error handling, and workflows without risking actual funds.
+
+### ⚙️ Why it’s used
+- **Integration testing**: Ensures your app or website correctly communicates with the payment gateway.  
+- **Workflow validation**: You can simulate scenarios like successful payments, declined cards, refunds, chargebacks, etc.  
+- **Developer training**: New engineers can practice without fear of breaking real transactions.  
+
+### 📊 Example
+Suppose you’re building an e-commerce site:
+- In **sandbox mode**, you might “buy” a product using a test credit card number (like `4111 1111 1111 1111` for Visa).  
+- The gateway responds with success/failure messages exactly as it would in production.  
+- Once everything works, you switch to **live mode**, where real customer payments are processed.
+
+👉 In short: sandboxed payment gateways are like flight simulators for online payments—realistic enough to prepare you, but risk-free because no actual money moves.  

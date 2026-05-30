@@ -1,0 +1,659 @@
+**ORM = talking to your database using JavaScript instead of SQL.**
+
+Your project does it **without** an ORM — meaning you write the SQL yourself:
+```js
+// YOUR project — raw SQL
+db.all('SELECT * FROM dreams ORDER BY created_at DESC')
+```
+
+An ORM would hide that SQL and let you write:
+```js
+// ORM style — no SQL visible
+Dream.findAll({ order: [['created_at', 'DESC']] })
+```
+
+Same result. Your way is actually **better for learning** because you can see exactly what's happening.
+
+---
+
+# How To Build DreamCatcher On Your PC — Step By Step
+
+I'll go one command at a time, explaining every word before you type it.
+
+---
+
+## Before Anything — What You Need Installed
+
+Open your terminal (on Windows: search "cmd" or "PowerShell". On Mac: search "Terminal") and check what you already have:
+
+```
+node --version
+```
+
+If you see something like `v20.0.0` — you have Node. Good.
+If you see `command not found` — go to **nodejs.org**, download the LTS version, install it, then come back.
+
+```
+npm --version
+```
+
+npm comes with Node automatically. You should see something like `10.0.0`.
+
+---
+
+## Step 1 — Create Your Project Folder
+
+```
+mkdir dream-catcher
+```
+`mkdir` = "make directory" = create a folder. You're naming it `dream-catcher`.
+
+```
+cd dream-catcher
+```
+`cd` = "change directory" = go inside that folder. Your terminal is now **inside** `dream-catcher`.
+
+---
+
+## Step 2 — Create `package.json`
+
+```
+npm init -y
+```
+
+`npm` = the tool that manages your packages
+`init` = initialise (set up) a new project
+`-y` = "yes to everything" — skips all the questions and uses defaults
+
+**What you'll see:**
+```
+Wrote to /your-path/dream-catcher/package.json
+```
+
+A `package.json` file now exists. Open it — it's your project's shopping list. Currently empty of dependencies.
+
+---
+
+## Step 3 — Tell Node To Use Modern `import` Syntax
+
+Open `package.json` in VS Code. Find this line:
+```json
+"main": "index.js",
+```
+
+Add one line below it:
+```json
+"main": "index.js",
+"type": "module",
+```
+
+Without this, Node uses the old `require()` style. With it, you can use `import` — which is what your whole project uses.
+
+---
+
+## Step 4 — Install Your Packages
+
+```
+npm install express sqlite sqlite3 helmet dotenv openai
+```
+
+`npm install` = download and add these packages
+Each word after is a separate package being installed:
+- `express` — your server
+- `sqlite` + `sqlite3` — your database tools (you need both)
+- `helmet` — security headers
+- `dotenv` — reads your `.env` file
+- `openai` — talks to OpenAI's AI
+
+**What you'll see:** A progress bar, then something like:
+```
+added 132 packages in 8s
+```
+
+A `node_modules` folder now exists. Don't open it — it has thousands of files. You never touch it manually.
+
+```
+npm install --save-dev nodemon
+```
+
+`--save-dev` = "this is only for development, not production"
+`nodemon` = auto-restarts server when you save a file
+
+---
+
+## Step 5 — Add Scripts to `package.json`
+
+Open `package.json`, find `"scripts"`, replace whatever's there with:
+
+```json
+"scripts": {
+  "start": "node server.js",
+  "dev": "nodemon server.js"
+},
+```
+
+`npm run dev` will now start your server with auto-restart.
+
+---
+
+## Step 6 — Create Your `.gitignore` File
+
+In your `dream-catcher` folder, create a file called exactly `.gitignore` (the dot is part of the name):
+
+```
+node_modules
+.env
+dreams.db
+```
+
+Do this **before** you create `.env` so Git never accidentally sees your key.
+
+---
+
+## Step 7 — Create Your `.env` File
+
+Create a file called `.env` in your `dream-catcher` folder:
+
+```
+OPENAI_API_KEY=your-actual-openai-key-here
+PORT=3001
+```
+
+To get an OpenAI key: go to **platform.openai.com** → API Keys → Create new key. Paste it here.
+
+This file stays on your computer only. Never gets uploaded. Never gets shared.
+
+---
+
+## Step 8 — Create Your Folder Structure
+
+In your terminal:
+```
+mkdir public config routes utils
+```
+
+This creates four folders at once. Your project now looks like:
+```
+dream-catcher/
+  public/
+  config/
+  routes/
+  utils/
+  package.json
+  .env
+  .gitignore
+  node_modules/
+```
+
+---
+
+## Step 9 — Create Every File
+
+Now create each file. I'll give you the exact content for each.
+
+---
+
+### `server.js` (in the root, next to `package.json`)
+
+```js
+import 'dotenv/config';
+import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import helmet from 'helmet';
+import { initDatabase } from './config/database-init.js';
+import dreamsRouter from './routes/dreams.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+app.use(helmet());
+app.use(express.json());
+app.use(express.static(join(__dirname, 'public')));
+
+app.use('/api/dreams', dreamsRouter);
+
+initDatabase().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}).catch(error => {
+  console.error('Failed to initialize database:', error);
+});
+```
+
+**What each part does:**
+- `import 'dotenv/config'` — first line, loads your `.env` file immediately
+- `helmet()` — security headers, uncommented because this is YOUR machine, not Scrimba
+- `express.static('public')` — serves your HTML/CSS/JS files automatically
+- `initDatabase().then(...)` — sets up the database first, then starts listening
+
+---
+
+### `config/database.js`
+
+```js
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const dbPath = join(dirname(__dirname), 'dreams.db');
+
+let db = null;
+
+export async function getDatabase() {
+  if (!db) {
+    db = await open({
+      filename: dbPath,
+      driver: sqlite3.Database
+    });
+    await db.exec('PRAGMA foreign_keys = ON');
+  }
+  return db;
+}
+```
+
+**What it does:** Opens the `dreams.db` file (creates it if it doesn't exist). The `if (!db)` check means it only opens once — every other call just reuses the same open connection.
+
+---
+
+### `config/database-init.js`
+
+```js
+import { getDatabase } from './database.js';
+
+export async function initDatabase() {
+  const db = await getDatabase();
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS dreams (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      dream_text TEXT NOT NULL,
+      interpretation TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  console.log('Database ready');
+}
+```
+
+**What it does:** Runs once on startup. Creates the `dreams` table if it doesn't already exist. `IF NOT EXISTS` means it's safe to run every time — it won't wipe your data.
+
+---
+
+### `utils/validateText.js`
+
+```js
+export function validateText(text) {
+  if (!text || typeof text !== 'string') {
+    return { valid: false, error: 'Dream text must be a string' };
+  }
+
+  const trimmed = text.trim();
+
+  if (trimmed.length < 10) {
+    return { valid: false, error: 'Dream must be at least 10 characters' };
+  }
+
+  if (trimmed.length > 2000) {
+    return { valid: false, error: 'Dream must be under 2000 characters' };
+  }
+
+  return { valid: true, value: trimmed };
+}
+```
+
+**What it does:** The bouncer. Checks the dream text before it touches anything else. Returns either `{ valid: false, error: "..." }` or `{ valid: true, value: cleanedText }`.
+
+---
+
+### `utils/ai-openai.js`
+
+```js
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+export async function getDreamInterpretation(dreamText) {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY is missing from .env file');
+  }
+
+  const message = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    max_tokens: 512,
+    messages: [
+      {
+        role: 'system',
+        content: 'You are a thoughtful dream interpreter. Be insightful but gentle. Keep your interpretation to 2-3 paragraphs.'
+      },
+      {
+        role: 'user',
+        content: `Dream: ${dreamText}`
+      }
+    ]
+  });
+
+  return message.choices[0].message.content.trim();
+}
+```
+
+**What it does:** Sends the dream to OpenAI. Gets back a text interpretation. Notice: no hardcoded key — it reads from `.env` only.
+
+---
+
+### `routes/dreams.js`
+
+```js
+import express from 'express';
+import { getDatabase } from '../config/database.js';
+import { getDreamInterpretation } from '../utils/ai-openai.js';
+import { validateText } from '../utils/validateText.js';
+
+const router = express.Router();
+
+// GET all dreams
+router.get('/', async (req, res) => {
+  try {
+    const db = await getDatabase();
+    const dreams = await db.all('SELECT * FROM dreams ORDER BY created_at DESC');
+    res.json(dreams);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch dreams' });
+  }
+});
+
+// POST new dream
+router.post('/', async (req, res) => {
+  const { dream_text } = req.body;
+
+  const validation = validateText(dream_text);
+  if (!validation.valid) {
+    return res.status(400).json({ error: validation.error });
+  }
+
+  try {
+    const interpretation = await getDreamInterpretation(validation.value);
+
+    const db = await getDatabase();
+    const result = await db.run(
+      'INSERT INTO dreams (dream_text, interpretation) VALUES (?, ?)',
+      [validation.value, interpretation]
+    );
+
+    const dream = await db.get('SELECT * FROM dreams WHERE id = ?', result.lastID);
+    res.status(201).json(dream);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to save dream' });
+  }
+});
+
+// DELETE a dream
+router.delete('/:id', async (req, res) => {
+  try {
+    const db = await getDatabase();
+    const result = await db.run('DELETE FROM dreams WHERE id = ?', req.params.id);
+
+    if (result.changes === 0) {
+      return res.status(404).json({ error: 'Dream not found' });
+    }
+
+    res.json({ message: 'Dream deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete dream' });
+  }
+});
+
+export default router;
+```
+
+---
+
+### `public/index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dream Catcher</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌙 DreamCatcher</h1>
+      <p>Record your dreams and discover their meanings</p>
+    </header>
+
+    <section class="add-dream">
+      <h2>Add a New Dream</h2>
+      <form id="dreamForm">
+        <textarea
+          id="dreamText"
+          placeholder="Describe your dream in detail..."
+          rows="6"
+          required
+        ></textarea>
+        <button type="submit" id="submitBtn">
+          <span class="btn-text">Get Interpretation</span>
+          <span class="btn-loading" style="display:none">Interpreting...</span>
+        </button>
+      </form>
+    </section>
+
+    <section class="dreams-list">
+      <h2>Your Dream Journal</h2>
+      <div id="dreamsContainer">
+        <p>Loading dreams...</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+```
+
+---
+
+### `public/app.js`
+
+```js
+// Load all dreams when page opens
+async function loadDreams() {
+  const response = await fetch('/api/dreams');
+  const dreams = await response.json();
+  displayDreams(dreams);
+}
+
+// Show dreams on the page
+function displayDreams(dreams) {
+  const container = document.getElementById('dreamsContainer');
+
+  if (dreams.length === 0) {
+    container.innerHTML = '<p>No dreams yet. Add your first one above!</p>';
+    return;
+  }
+
+  container.innerHTML = dreams.map(dream => `
+    <div class="dream-card">
+      <p class="dream-text">${dream.dream_text}</p>
+      <p class="interpretation">${dream.interpretation}</p>
+      <small>${new Date(dream.created_at).toLocaleDateString()}</small>
+      <button onclick="deleteDream(${dream.id})">Delete</button>
+    </div>
+  `).join('');
+}
+
+// Submit new dream
+document.getElementById('dreamForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const dreamText = document.getElementById('dreamText').value;
+  const submitBtn = document.getElementById('submitBtn');
+  const btnText = submitBtn.querySelector('.btn-text');
+  const btnLoading = submitBtn.querySelector('.btn-loading');
+
+  // Show loading state
+  btnText.style.display = 'none';
+  btnLoading.style.display = 'inline';
+  submitBtn.disabled = true;
+
+  const response = await fetch('/api/dreams', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dream_text: dreamText })
+  });
+
+  const result = await response.json();
+
+  // Reset button
+  btnText.style.display = 'inline';
+  btnLoading.style.display = 'none';
+  submitBtn.disabled = false;
+
+  if (response.ok) {
+    document.getElementById('dreamText').value = '';
+    loadDreams();
+  } else {
+    alert(result.error);
+  }
+});
+
+// Delete a dream
+async function deleteDream(id) {
+  if (!confirm('Delete this dream?')) return;
+
+  await fetch(`/api/dreams/${id}`, { method: 'DELETE' });
+  loadDreams();
+}
+
+// Start
+loadDreams();
+```
+
+---
+
+### `public/styles.css`
+
+```css
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: sans-serif;
+  background: #0f0f1a;
+  color: #e0e0ff;
+  padding: 20px;
+}
+
+.container { max-width: 700px; margin: 0 auto; }
+
+header { text-align: center; padding: 40px 0; }
+header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+
+.add-dream, .dreams-list { margin: 30px 0; }
+h2 { margin-bottom: 15px; color: #a0a0ff; }
+
+textarea {
+  width: 100%;
+  padding: 12px;
+  background: #1a1a2e;
+  border: 1px solid #3a3a5c;
+  color: #e0e0ff;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+button[type="submit"] {
+  margin-top: 10px;
+  padding: 12px 24px;
+  background: #6060ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.dream-card {
+  background: #1a1a2e;
+  border: 1px solid #3a3a5c;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.dream-text { font-style: italic; margin-bottom: 10px; }
+.interpretation { line-height: 1.6; color: #c0c0ff; margin-bottom: 10px; }
+small { color: #8080aa; }
+
+.dream-card button {
+  margin-top: 10px;
+  padding: 6px 14px;
+  background: #ff4060;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+```
+
+---
+
+## Step 10 — Run It
+
+```
+npm run dev
+```
+
+You'll see:
+```
+[nodemon] starting `node server.js`
+Database ready
+Server running on http://localhost:3001
+```
+
+Open your browser and go to `http://localhost:3001`.
+
+Your app is running. Type a dream, click the button, wait a few seconds — the AI interpretation comes back, gets saved to `dreams.db`, and appears on the page.
+
+---
+
+## Your Final Folder Structure
+
+```
+dream-catcher/
+  public/
+    index.html
+    styles.css
+    app.js
+  config/
+    database.js
+    database-init.js
+  routes/
+    dreams.js
+  utils/
+    ai-openai.js
+    validateText.js
+  server.js
+  package.json
+  .env            ← on your computer only, never uploaded
+  .gitignore
+  node_modules/   ← never touched manually, never uploaded
+  dreams.db       ← created automatically when server starts
+```
+
+That's it. You built the whole thing from scratch.

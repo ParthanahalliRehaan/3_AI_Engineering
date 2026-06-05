@@ -1,0 +1,179 @@
+## 🧩 Key Concepts
+
+### 1. Traditional Retrieval (RAG)
+- You embed documents (convert them into vectors).
+- When a user asks a question, you embed the query.
+- You search for similar documents in the vector database.
+- You pass those docs as context to the model → model answers based on them.
+
+This is a **one-directional pipeline**.
+
+---
+
+### 2. Agent Routing (Binary Classification)
+Instead of always retrieving:
+- **Step 1:** Classify the query → Does it need retrieval or not?
+- **Step 2:**  
+  - If **retrieval needed** → do RAG (embed query, fetch docs, answer).  
+  - If **general question** → answer directly using the model’s training.
+
+This introduces **agency**: the model decides how to handle the query.
+
+---
+
+### 3. Why Vercel AI SDK?
+- Replaces primitive OpenAI functions.
+- Provides structured interfaces (`embed`, `generateText`, etc.).
+- Easier integration with Supabase (vector DB).
+
+---
+
+### 4. Knowledge Base
+- Scraped Scrimba help docs → converted to Markdown.
+- Embedded and stored in Supabase.
+- Used for retrieval when queries are about Scrimba.
+
+---
+
+## 💻 Code Walkthrough
+
+### Step 1: Ingest Documents
+```js
+import { embed } from "ai"; // from Vercel AI SDK
+import fs from "fs";
+import path from "path";
+import { supabase } from "./config.js"; // Supabase client
+
+async function ingestDocuments() {
+  const docsDir = "./docs"; // folder with Scrimba help docs
+  const files = fs.readdirSync(docsDir);
+
+  for (const file of files) {
+    const content = fs.readFileSync(path.join(docsDir, file), "utf-8");
+
+    // Create embeddings
+    const embedding = await embed({
+      model: "text-embedding-3-small",
+      value: content,
+    });
+
+    // Insert into Supabase
+    await supabase.from("documents").insert({
+      text: content,
+      embedding: embedding,
+      metadata: { source: file },
+    });
+  }
+
+  console.log("✅ Documents ingested successfully!");
+}
+```
+
+**Explanation:**
+- Loop through each Markdown file.
+- Embed content using Vercel AI SDK.
+- Store text + embedding + metadata in Supabase.
+
+---
+
+### Step 2: Basic Retrieval
+```js
+import { generateText, embed } from "ai";
+
+async function basicRetrieval(query) {
+  // Embed the query
+  const queryEmbedding = await embed({
+    model: "text-embedding-3-small",
+    value: query,
+  });
+
+  // Call Supabase RPC to match docs
+  const { data: matches } = await supabase.rpc("match_documents", {
+    query_embedding: queryEmbedding,
+    match_threshold: 0.4, // optional threshold
+    match_count: 3,       // top 3 docs
+  });
+
+  // Combine docs
+  const context = matches.map(doc => doc.text).join("\n");
+
+  // Generate answer
+  const response = await generateText({
+    model: "gpt-4o-mini",
+    prompt: `Context:\n${context}\n\nQuestion: ${query}\nAnswer:`,
+  });
+
+  console.log("Answer:", response.text);
+}
+```
+
+**Explanation:**
+- Embed the query.
+- Retrieve similar docs from Supabase.
+- Combine docs into context.
+- Ask the model to answer based on context.
+
+---
+
+### Step 3: Classification + Routing
+```js
+async function classifyRetrieve(query) {
+  // Step 1: Classification
+  const classification = await generateText({
+    model: "gpt-4o-mini",
+    prompt: `
+      Scrimba is an online platform for learning to code.
+      Classify the question as either "retrieval" or "general".
+      Question: ${query}
+      Classification:`,
+    maxOutputTokens: 20,
+    temperature: 0, // deterministic
+  });
+
+  const decision = classification.text.trim().toLowerCase();
+
+  // Step 2: Routing
+  if (decision === "retrieval") {
+    console.log("🔎 Classified as retrieval");
+    return await basicRetrieval(query);
+  } else {
+    console.log("💡 Classified as general");
+    const response = await generateText({
+      model: "gpt-4o-mini",
+      prompt: `Answer concisely: ${query}`,
+    });
+    console.log("Answer:", response.text);
+  }
+}
+```
+
+**Explanation:**
+- Ask the model to classify the query.
+- If "retrieval" → run RAG pipeline.
+- If "general" → answer directly.
+- Temperature = 0 ensures no creativity (just retrieval/general).
+
+---
+
+### Step 4: Fallbacks
+- If retrieval returns **no docs**, fallback to general answer.
+- Ensures the user always gets a response.
+
+---
+
+## 🧠 Example Run
+
+```js
+await classifyRetrieve("How do I access Scrimba Discord?");
+// → Classified as retrieval → fetch docs → answer with Discord link
+
+await classifyRetrieve("What is the capital of France?");
+// → Classified as general → answer directly: "Paris"
+```
+
+---
+
+## 🚀 Why This Matters
+- Moves from **static retrieval** → **agentic routing**.
+- Model decides whether to use knowledge base or its own training.
+- Foundation for building a **customer support AI agent**.

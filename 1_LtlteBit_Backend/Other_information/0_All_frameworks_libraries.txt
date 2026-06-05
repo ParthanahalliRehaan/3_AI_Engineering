@@ -1,0 +1,98 @@
+---
+
+## 🎨 Frontend (Client-Side)
+These run in the browser, focused on **UI and user interaction**.
+
+- **Vanilla JS**  
+  - *Use when:* Learning fundamentals, adding small interactivity.  
+  - *Why:* No overhead, direct DOM control.  
+  - *Backend use?* ❌ Not suitable — it’s purely client-side.
+
+- **React**  
+  - *Use when:* Building interactive UIs with reusable components.  
+  - *Why:* Declarative rendering, huge ecosystem.  
+  - *Backend use?* ❌ Not suitable — React is only for frontend rendering.
+
+- **Angular / Vue / Svelte**  
+  - *Use when:* Alternatives to React depending on team preference.  
+  - *Why:* Angular = enterprise structure, Vue = simplicity, Svelte = lightweight.  
+  - *Backend use?* ❌ These are frontend-only frameworks.
+
+- **Three.js / D3.js**  
+  - *Use when:* Specialized visuals (3D, data viz).  
+  - *Backend use?* ❌ Graphics libraries don’t belong on the server.
+
+---
+
+## ⚙️ Backend (Server-Side)
+These run on Node.js, focused on **data, APIs, and business logic**.
+
+- **Express.js**  
+  - *Use when:* Quick APIs, small to medium projects.  
+  - *Why:* Minimal, flexible, easy to set up.  
+  - *Frontend use?* ❌ Not suitable — Express doesn’t render UI, it serves data.
+
+- **Nest.js**  
+  - *Use when:* Large-scale, enterprise backends.  
+  - *Why:* Opinionated, TypeScript-first, modular, scalable.  
+  - *Frontend use?* ❌ Not suitable — Nest is backend-only.
+
+- **Fastify / Koa / Hapi**  
+  - *Use when:* Alternatives to Express for performance or structure.  
+  - *Frontend use?* ❌ Backend-only frameworks.
+
+---
+
+## 🔗 Mixed (Full-Stack / Specialized)
+These combine **frontend + backend** or serve special roles.
+
+- **Next.js**  
+  - *Use when:* Full-stack web apps with routing, SSR, SEO, and APIs.  
+  - *Why:* React + batteries included (routing, server rendering, API routes).  
+  - *Backend use?* ✅ Yes, but only for **lightweight backend logic** (API routes, server rendering).  
+    - *Use case:* If your backend needs are simple (auth, form handling, small APIs), you can keep everything inside Next.js.  
+    - *Avoid for:* Heavy backend systems (complex microservices, enterprise APIs) → better to use Nest.js or Express separately.
+
+- **Nuxt.js / Remix / SvelteKit**  
+  - *Use when:* Alternatives to Next.js depending on frontend choice.  
+  - *Backend use?* ✅ Same as Next.js — good for lightweight backend logic, but not enterprise-scale.
+
+- **Socket.io**  
+  - *Use when:* Real-time communication (chat, live updates).  
+  - *Why:* Simplifies WebSockets.  
+  - *Backend use?* ✅ Yes — Socket.io runs on the server to manage connections, but it also has a frontend client library.  
+    - *Use case:* Perfect when you need both ends (frontend + backend) talking in real-time.
+
+- **Electron.js**  
+  - *Use when:* Desktop apps using web tech.  
+  - *Backend use?* ✅ Kind of — Electron bundles Node.js, so you can run backend logic inside the desktop app.  
+    - *Use case:* Apps like VS Code or Slack desktop, where frontend and backend logic live together.
+
+- **React Native**  
+  - *Use when:* Mobile apps with React.  
+  - *Backend use?* ❌ Not directly — React Native is frontend for mobile. You still need a backend (Express/Nest/Next API routes).
+
+---
+
+## 🗺️ Decision Framework (Frontend vs Backend vs Mixed)
+
+| Layer | Framework/Library | Use for Backend? | Why/When |
+|-------|-------------------|------------------|----------|
+| Frontend | Vanilla JS, React, Angular, Vue, Svelte, Three.js, D3.js | ❌ | Purely client-side, not backend capable |
+| Backend | Express.js | ✅ | Great for small APIs, lightweight servers |
+| Backend | Nest.js | ✅ | Best for enterprise-scale, structured backends |
+| Backend | Fastify/Koa/Hapi | ✅ | Alternatives to Express, performance or structure |
+| Mixed | Next.js | ✅ (lightweight) | Good for small backend logic + frontend in one |
+| Mixed | Nuxt.js / Remix / SvelteKit | ✅ (lightweight) | Same as Next.js, tied to their frontend ecosystem |
+| Mixed | Socket.io | ✅ | Real-time communication, works on both client and server |
+| Mixed | Electron.js | ✅ | Bundles Node.js, backend logic inside desktop apps |
+| Mixed | React Native | ❌ | Mobile frontend only, needs external backend |
+
+---
+
+👉 **Key takeaway:**  
+- Use **frontend frameworks** (React, Angular, Vue, etc.) only for UI.  
+- Use **backend frameworks** (Express, Nest, Fastify) for APIs and server logic.  
+- Use **mixed frameworks** (Next.js, Nuxt, Remix, Socket.io, Electron) when you want frontend + backend in one project or special cases like real-time or desktop apps.  
+
+---

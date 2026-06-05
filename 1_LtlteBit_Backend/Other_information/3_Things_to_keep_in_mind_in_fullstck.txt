@@ -1,0 +1,179 @@
+---
+
+## 🎨 Frontend
+
+**Routing** — Controls which UI component renders based on the URL. Libraries like React Router or Next.js handle this, including nested routes and protected/guarded routes.
+
+**Layouts** — Reusable shell components (header, sidebar, footer) that wrap pages so you don't repeat structure across every screen.
+
+**Navigation** — The UX of moving between pages — menus, breadcrumbs, deep linking, back/forward behavior.
+
+**Responsive UI** — Designing interfaces that adapt to any screen size using CSS Grid, Flexbox, and breakpoints. Mobile-first means you design for small screens first, then scale up.
+
+**State Management** — How your app stores and shares data. Local state lives in a component; global state (Redux, Zustand) is shared across the whole app.
+
+**Forms & Validation** — Capturing user input with proper error messages, labels, and ARIA attributes so forms are usable and accessible.
+
+**Performance** — Techniques like lazy loading (load only what's needed), code splitting (break JS into smaller chunks), and minimizing re-renders to keep the app fast.
+
+**Accessibility (a11y)** — Making your app usable for everyone — keyboard navigation, screen reader support, sufficient color contrast, WCAG compliance.
+
+**API Mocking** — Simulating backend responses during frontend development so you don't need a real server running. Tools like MSW (Mock Service Worker).
+
+---
+
+## ⚙️ Backend
+
+**Routing** — Maps incoming HTTP requests (GET /users, POST /orders) to the right handler function. In GraphQL, this is done via resolvers instead.
+
+**Controllers & Services** — Controllers receive requests and send responses. Services contain the actual business logic. Separating them keeps code clean and testable.
+
+**Middleware** — Functions that run before your route handler — used for authentication checks, logging requests, rate limiting, and parsing request bodies.
+
+**Error Handling** — A centralized system that catches errors and returns consistent, meaningful HTTP responses (400 Bad Request, 404 Not Found, 500 Internal Server Error).
+
+**Scalability** — Building services to be stateless (no session stored on server) so you can run multiple instances behind a load balancer to handle more traffic.
+
+**API Versioning** — Maintaining multiple versions of your API (/v1/, /v2/) so existing clients don't break when you make changes.
+
+**Request/Response Validation** — Validating the shape and type of incoming data using libraries like Zod or Joi before it hits your business logic.
+
+**OpenAPI/Swagger** — A standard format for documenting your REST API so other developers (and tools) know exactly what endpoints exist, what they accept, and what they return.
+
+**Webhooks** — Your server sending HTTP POST requests to another server when an event happens (e.g., Stripe notifying you when a payment succeeds).
+
+---
+
+## 🗄️ Database
+
+**Schema Design** — Planning how your data is structured — tables, columns, data types, relationships. Normalization avoids data duplication; denormalization trades that for read speed.
+
+**ORM / Query Builders** — Tools like Prisma or TypeORM let you interact with the database using code instead of raw SQL. Raw SQL is still used when you need fine-grained control.
+
+**Migrations** — Version-controlled scripts that evolve your database schema over time (add a column, rename a table) without manually editing the DB.
+
+**Transactions** — Grouping multiple DB operations so they either all succeed or all fail together — critical for things like transferring money between accounts.
+
+**Indexing** — Creating pointers on frequently queried columns so the database can find rows faster without scanning the whole table.
+
+**Caching** — Storing frequently read data in memory (Redis) so you avoid hitting the database repeatedly for the same result.
+
+**Search** — Dedicated search engines like Elasticsearch or Typesense that handle full-text search, fuzzy matching, and filters far better than SQL LIKE queries.
+
+**Backup & Recovery** — Automated regular backups of your database and a tested plan to restore data if something goes wrong.
+
+---
+
+## 🔑 Auth & Security
+
+**Authentication** — Verifying who the user is. Common methods: JWT (stateless tokens), OAuth2 (login with Google/GitHub), sessions (server stores login state), passwordless (magic links, OTP).
+
+**Password Hashing** — Passwords are never stored as plaintext. They're run through a one-way hashing algorithm (bcrypt, argon2) with a salt so even if the DB leaks, passwords are safe.
+
+**Authorization (RBAC/ABAC)** — Controlling what an authenticated user can do. RBAC assigns roles (admin, editor, viewer). ABAC uses attributes (department, location) for finer control.
+
+**Token Lifecycle** — Managing how long tokens last, issuing refresh tokens to get new access tokens, and revoking tokens when users log out or accounts are compromised.
+
+**MFA (Multi-Factor Authentication)** — Requiring a second proof of identity beyond password — via SMS code, email OTP, or authenticator apps like Google Authenticator.
+
+**HTTPS** — Encrypting all traffic between client and server using TLS so data can't be intercepted in transit.
+
+**Input Sanitization** — Cleaning user input to prevent attacks like SQL injection (malicious DB queries) and XSS (injecting scripts into your page).
+
+**Rate Limiting** — Restricting how many requests a user/IP can make in a time window to prevent brute force attacks and API abuse.
+
+**Secure Headers** — HTTP headers that tell browsers how to behave: CSP (what scripts can run), HSTS (force HTTPS), X-Frame-Options (prevent clickjacking).
+
+**Dependency Audits** — Regularly scanning your third-party libraries for known vulnerabilities using tools like `npm audit` or Snyk.
+
+---
+
+## 📡 Real-time & Async
+
+**WebSockets / SSE** — WebSockets keep a persistent two-way connection between client and server (chat apps, live collaboration). Server-Sent Events (SSE) is one-way — server pushes updates to client (notifications, live feeds).
+
+**Message Queues** — A system (Kafka, RabbitMQ, SQS) where services communicate by publishing and consuming messages asynchronously, decoupling producers from consumers.
+
+**Background Jobs** — Tasks that run outside the request/response cycle — sending emails, processing images, generating reports. Libraries: Bull (Node), Celery (Python).
+
+**Cron Schedulers** — Jobs that run on a time schedule (every day at midnight, every hour) — like sending digest emails or cleaning up expired sessions.
+
+---
+
+## 📁 File & Media
+
+**File/Image Storage** — Storing user-uploaded files on object storage like AWS S3 or Cloudinary rather than your server's disk, so storage scales independently and files are durable.
+
+**CDN (Content Delivery Network)** — Distributing static assets (images, JS, CSS) across servers worldwide so users load them from the nearest location, reducing latency.
+
+---
+
+## 🛠️ Infrastructure & DevOps
+
+**Environment Configs** — Separate configuration for development, staging, and production environments — different DB URLs, API keys, feature flags per environment.
+
+**CI/CD Pipelines** — Automated workflows that run tests, linting, and builds on every code push, then deploy automatically if everything passes. Tools: GitHub Actions, GitLab CI.
+
+**Docker** — Containerizes your app with all its dependencies so it runs identically on any machine or server.
+
+**Kubernetes** — Orchestrates multiple Docker containers — handles scaling, self-healing, rolling deployments, and load balancing across a cluster.
+
+**Cloud Services** — Managed infrastructure on AWS, GCP, or Azure — databases, serverless functions, queues, storage — so you don't manage physical servers.
+
+**Feature Flags** — Toggles that let you enable/disable features for specific users or environments without deploying new code. Great for gradual rollouts.
+
+**Monorepo vs Polyrepo** — Monorepo: all projects in one repository (easier to share code). Polyrepo: each service/app has its own repo (clearer ownership, more isolation).
+
+---
+
+## 🔭 Observability
+
+**Centralized Logging** — Aggregating logs from all services into one place (ELK Stack — Elasticsearch, Logstash, Kibana) so you can search and analyze them easily.
+
+**Metrics** — Numerical measurements over time (request count, error rate, CPU usage) visualized with Prometheus and Grafana to understand system health.
+
+**Distributed Tracing** — Tracking a single request as it flows across multiple services, so you can pinpoint exactly where slowness or failures occur. Tool: OpenTelemetry.
+
+**Error Tracking** — Capturing and grouping application errors in real time with full stack traces and context. Tool: Sentry.
+
+**Uptime Monitoring** — Continuously pinging your endpoints to alert you immediately if something goes down. Tools: UptimeRobot, Checkly.
+
+---
+
+## 🧪 Testing
+
+**Unit Tests** — Testing individual functions or components in isolation to verify they work correctly on their own.
+
+**Integration Tests** — Testing how multiple parts work together — API endpoints hitting a real (or test) database, services calling each other.
+
+**End-to-End (E2E) Tests** — Simulating real user flows in a browser — clicking buttons, filling forms, checking outcomes. Tools: Cypress, Playwright.
+
+**Load Testing** — Simulating high traffic to find where your system breaks under pressure. Tools: k6, Locust.
+
+**Security Testing** — Scanning for vulnerabilities (OWASP Top 10) and running penetration tests to find exploitable weaknesses before attackers do.
+
+---
+
+## 💼 Business & Product
+
+**Transactional Email/SMS** — Automated messages triggered by user actions — welcome emails, password resets, OTP codes. Services: SendGrid, Twilio.
+
+**Payments** — Integrating payment processing (Stripe, Razorpay) for subscriptions, one-time charges, refunds, and invoicing.
+
+**Analytics & Event Tracking** — Recording user behavior (page views, button clicks, funnels) to understand how people use your product. Tools: PostHog, Mixpanel.
+
+**Internationalization (i18n)** — Building your app to support multiple languages and locales — translated strings, locale-aware date/number/currency formatting.
+
+---
+
+## 🧑‍💻 Developer Experience
+
+**Linting & Formatting** — Enforcing consistent code style automatically. ESLint catches code quality issues; Prettier formats code uniformly across the team.
+
+**Data Seeding & Fixtures** — Populating your database with realistic test data so developers and testers can work without needing real user data.
+
+**API Documentation** — Keeping clear, up-to-date docs (Swagger UI, Postman collections) so frontend devs and external consumers know exactly how to use your API.
+
+**Code Review Standards** — Defined conventions for PRs — size limits, required reviewers, checklist items — so reviews are fast and consistent.
+
+---

@@ -1,0 +1,180 @@
+## 📚 Complete Lesson Recap
+
+### 1. **Structured Outputs**
+- Normally, AI gives free‑form text.  
+- With structured outputs, you force the model to return JSON following a schema.  
+- Example:
+  ```json
+  { "location": "New York", "temperature": 72 }
+  ```
+- This makes it easy to pass data into functions.
+
+---
+
+### 2. **Tools (Functions)**
+- Tools = actions the model can call.  
+- They are just functions you define in code.  
+- Each tool has:
+  - `name` → identifier.  
+  - `description` → what it does.  
+  - `parameters` → schema (JSON structure).  
+  - `execute` → the function logic.  
+
+**Code Example: Weather Tool**
+```js
+const weatherTool = {
+  name: "weather",
+  description: "Get the weather for a location",
+  parameters: {
+    type: "object",
+    properties: { location: { type: "string" } },
+    required: ["location"]
+  },
+  execute: async ({ location }) => {
+    const temperature = Math.floor(Math.random() * (90 - 50) + 50);
+    return { location, temperature };
+  }
+};
+```
+
+---
+
+### 3. **Tool Calling**
+- Flow:
+  1. User asks a question.  
+  2. Model generates structured output (tool call).  
+  3. You execute the tool.  
+  4. Tool returns result.  
+  5. You feed result back to the model.  
+  6. Model summarizes into final answer.  
+
+**Tool Call vs Tool Result**
+- Tool Call = AI’s request:
+  ```json
+  { "name": "weather", "arguments": { "location": "New York" } }
+  ```
+- Tool Result = your function’s output:
+  ```json
+  { "location": "New York", "temperature": 72 }
+  ```
+
+---
+
+### 4. **OpenAI Raw Function Calling**
+- You define functions with schemas.  
+- Model can call **one function per response**.  
+- You must write a **loop** (`while`) to keep checking until no more function calls.  
+
+**Code Skeleton:**
+```js
+while (true) {
+  const response = await client.chat.completions.create({ ... });
+  const message = response.choices[0].message;
+
+  if (message.function_call) {
+    const result = await executeTool(message.function_call.name, JSON.parse(message.function_call.arguments));
+    messages.push(message);
+    messages.push({ role: "function", name: message.function_call.name, content: JSON.stringify(result) });
+  } else {
+    console.log("Final Answer:", message.content);
+    break;
+  }
+}
+```
+
+---
+
+### 5. **OpenAI Functions**
+- Same as raw function calling, but officially packaged.  
+- You pass `functions: [...]` in the API call.  
+- Still only one function per response.  
+- You handle execution + looping.
+
+---
+
+### 6. **OpenAI Automated Function Calling**
+- Improvement: API can chain calls internally.  
+- Less manual orchestration.  
+- But still lower‑level than SDKs — you often need logic for complex workflows.
+
+---
+
+### 7. **Vercel AI SDK**
+- Built on top of OpenAI function calling.  
+- Automates the loop internally.  
+- You just set `stopWhen` to control how many steps.  
+
+**Code Skeleton:**
+```js
+import { generateText } from "ai";
+
+const result = await generateText({
+  model: "gpt-4o-mini",
+  tools: [weatherTool, attractionsTool],
+  prompt: "Weather + attractions in New York",
+  stopWhen: 3 // 1: tool call, 2: tool result, 3: final summary
+});
+
+console.log("Final Answer:", result.text);
+console.log("Tool Calls:", result.toolCalls);
+console.log("Tool Results:", result.toolResults);
+```
+
+---
+
+### 8. **StopWhen**
+- Controls how many steps the SDK runs.  
+- Example:  
+  - `stopWhen: 2` → tool call + tool result.  
+  - `stopWhen: 3` → tool call + tool result + final summary.  
+- This replaces the manual `while` loop.
+
+---
+
+### 9. **Multiple Tools Example**
+- You can define multiple tools (e.g., weather + attractions).  
+- Model decides which to call based on prompt.  
+
+**Code Skeleton:**
+```js
+const attractionsTool = {
+  name: "cityAttractions",
+  description: "Get tourist attractions for a city",
+  parameters: {
+    type: "object",
+    properties: { city: { type: "string" } },
+    required: ["city"]
+  },
+  execute: async ({ city }) => {
+    return { city, attractions: ["Statue of Liberty", "Central Park", "Times Square"] };
+  }
+};
+
+const result = await generateText({
+  model: "gpt-4o-mini",
+  tools: [weatherTool, attractionsTool],
+  prompt: "What is the weather in New York and what are the best attractions?",
+  stopWhen: 3
+});
+```
+
+---
+
+## ⚡ Key Takeaways
+- **Structured outputs** → force JSON.  
+- **Tools** → functions with schemas + execute logic.  
+- **Tool calling** → AI generates structured input, you run function, feed result back.  
+- **Raw OpenAI API** → manual loop needed.  
+- **OpenAI Functions** → official packaging, still manual loop.  
+- **Automated function calling** → less manual, but still lower‑level.  
+- **Vercel AI SDK** → automates loop with `stopWhen`.  
+- **StopWhen** → replaces `while` loop, controls steps.  
+- **Multiple tools** → model can chain calls, SDK handles orchestration.
+
+---
+
+## 📂 File Naming for Future Reference
+Save this recap + code as:  
+**`agent-function-calling-complete.js`**
+
+This name makes it clear it’s your **complete cheat sheet** for function calling, tools, raw API, automated calling, and Vercel SDK.

@@ -1,0 +1,51 @@
+html, body {
+    margin: 1em;
+    display: grid;
+    background: #212121;
+    place-items: center;
+    padding-top: 42px;
+}
+
+#generate-btn{
+    background: linear-gradient(135deg, #ffcc00, #ff9900);
+    color: #222;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+#hf-logo{
+    padding: 1rem;
+}
+
+#new-image {
+    display: block;
+    margin-top: 20px;
+    max-width: 500px;
+    width: 100%;
+
+    /* Frame thickness */
+    padding: 18px;
+
+    /* Wood-like frame using gradients */
+    background: linear-gradient(135deg, #8b5a2b, #5c3a1a);
+
+    /* Inner border (frame edge detail) */
+    border: 6px solid #3e260f;
+
+    /* Rounded corners */
+    border-radius: 12px;
+
+    /* Depth / shadow */
+    box-shadow: 
+        0 10px 25px rgba(0,0,0,0.6),
+        inset 0 0 10px rgba(0,0,0,0.5);
+
+    /* Optional: make image look inset */
+    background-clip: padding-box;
+}

@@ -1,0 +1,63 @@
+🎓 **Welcome to the course on building a customer support AI agent with Vercel AI SDK and OpenAI.**
+
+Over the past couple of years, AI has transformed how we work. One of the most exciting developments is the rise of **AI agents**. Unlike static chatbots, these agents can trigger actions, call APIs, interact with databases, and make autonomous decisions. That means they don’t just *answer* — they *do*. And that’s where productivity skyrockets.
+
+---
+
+💡 **Why customer support?**
+
+Customer support is the heartbeat of every company. It’s where complaints, bugs, and issues surface. Solving them well keeps customers loyal and happy. AI agents can:
+
+- Escalate and resolve issues quickly.  
+- Automate responses to basic queries, freeing humans for complex cases.  
+- Personalize support by retrieving past conversations or user profiles.  
+- Analyze interactions to uncover trends, problems, and even new product ideas.  
+
+This is why customer support is one of the most powerful real-world use cases for AI agents.
+
+---
+
+🛠️ **What you’ll learn in this course:**
+
+1. **Query classification & routing** — teaching the LLM to understand intent and route queries intelligently.  
+2. **Real-time retrieval** — not just *when* to fetch info, but *how*.  
+3. **Vercel AI SDK basics** — simplifying workflows and speeding up development.  
+4. **Retrieval Augmented Generation (RAG)** — grounding answers in real data to reduce hallucinations.  
+5. **Function calling & API integration** — enabling the agent to take meaningful actions.  
+6. **Express services** — building API routes to support your agent.  
+
+By the end, you’ll have a **production-ready customer support AI agent** that can handle real-world tasks, not just toy examples.
+
+---
+
+📖 **Example in action:**
+
+- User asks: *“How do I join the Scrimba Discord?”*  
+- The agent checks Scrimba’s help docs. If the answer is there, it shows the sources.  
+- If not, the agent autonomously decides to perform a **web search** and retrieves the info.  
+
+That’s the leap from chatbot → agent.
+
+---
+
+⚠️ **Prerequisites you should already know:**
+
+- How to use the OpenAI API (create account, retrieve API key, make calls).  
+- Basic prompt crafting (even just ChatGPT experience is fine).  
+- Concept of RAG (retrieval augmented generation).  
+- Function calling basics.  
+- Creating simple Express services for API routes.  
+
+Don’t worry if you’re not an expert — I’ll walk you through essentials step by step.
+
+---
+
+🔥 **Final note before we dive in:**
+
+This course is **advanced**. The code will challenge you. At the end of each lesson, take time to play with the code, break it, fix it, and really understand it before moving on. That’s how you’ll grow from beginner → builder.
+
+---
+
+👩🏽‍🏫 *My name is Mayowa Oshin. I’m an AI engineering educator and coauthor of **Learning LangChain** (O’Reilly). If you want my thoughts on tech, AI, and entrepreneurship, you can follow me at Mayowa Oshin.*  
+
+Now, if you’re ready to start building powerful AI agents that can make a real impact — let’s get started.

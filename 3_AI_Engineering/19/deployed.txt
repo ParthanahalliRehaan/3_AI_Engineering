@@ -1,1 +1,0 @@
-https://stock-predictor-eed.pages.dev/ this is automatic or continous deployment meaning when the repo is changes the site is re-deployed again.

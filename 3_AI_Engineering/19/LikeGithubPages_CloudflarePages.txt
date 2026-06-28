@@ -1,1 +1,0 @@
-Either use githubpages or u can connect that repo to cloudflare pages n it will deploy instantly but u need to create page first ofc.

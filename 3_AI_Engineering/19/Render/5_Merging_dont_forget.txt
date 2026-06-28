@@ -1,1 +1,0 @@
-before merging dont forget to add one more env var in render that is db url and Password

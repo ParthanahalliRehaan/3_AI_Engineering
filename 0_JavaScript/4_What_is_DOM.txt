@@ -1,7 +1,0 @@
-Why document isn’t defined in Node.js
--   In a browser environment, document is part of the DOM API. It represents the HTML document loaded in the window, 
-    and you can manipulate it with methods like document.querySelector() or document.createElement().
-    
--   In Node.js, there is no DOM by default. Node is designed for server-side JavaScript, 
-    so it doesn’t provide document, window, or other browser-specific globals. That’s why if you try to access document in Node, 
-    you’ll get a ReferenceError.

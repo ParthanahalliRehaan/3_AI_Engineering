@@ -1,0 +1,9 @@
+{
+  "name": "4_5",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node script.js"
+  },
+  "license": "ISC",
+  "type": "module"
+}

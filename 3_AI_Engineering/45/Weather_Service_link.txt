@@ -1,2 +1,0 @@
-https://openweathermap.org/api
-Since the API Key failed moved to https://open-meteo.com/en/docs?bounding_box=-90,-180,90,180 as this doesnt require API Key.

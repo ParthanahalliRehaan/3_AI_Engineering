@@ -1,6 +1,0 @@
- PLAN:
- 1. Design a well-written ReAct prompt
- 2. Build a loop for my agent to run in.
- 3. Parse any actions that the LLM determines are necessary
- 4. End condition - final Answer is given
- 

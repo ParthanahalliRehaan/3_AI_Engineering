@@ -1,3 +1,0 @@
-Go through the video 
-
-The editor in Cloudflare is built by Monaco editor which acts as underhood editor for VS Code.

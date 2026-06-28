@@ -1,3 +1,0 @@
-To connect to gift-genie. Just do one thing that is change the end point to https://openai-api-worker.guil-9d2.workers.dev
-
-this is connected to 11 folder in case of the stream else normal case 10

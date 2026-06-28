@@ -1,1 +1,0 @@
-When buying a Domain we must hand over the Domain Name System DNS to Cloudflare to setup a custom domain or just create a custom domain from cloudflare itself.

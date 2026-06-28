@@ -1,1 +1,0 @@
-we can access hf through the chat completions api.

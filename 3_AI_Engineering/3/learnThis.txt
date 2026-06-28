@@ -1,4 +1,0 @@
-ES6 Modules - https://www.youtube.com/watch?v=fl-_6d18DN0 - Bro Code / 6 minutes 
-
-
-    Detailed explanation of this video is in [JS/ES6_Modules]

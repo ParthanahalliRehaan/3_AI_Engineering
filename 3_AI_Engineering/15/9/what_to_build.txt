@@ -1,2 +1,0 @@
-PixelRonin Websites base that is login, DB ORM, Backend....1 Chatbot for giving sample of each gamified course to decide which wanna lrn
-Also chatbot gives 24 hours task. After 1 8 make games to learn paths.v

@@ -1,1 +1,0 @@
-Even if u give small input the dimension of the model is fixed also dimension depends on model

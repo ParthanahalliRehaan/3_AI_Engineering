@@ -1,0 +1,1 @@
+Before starting make sure to learn these https://github.com/ParthanahalliRehaan/2_JS_Node/ And https://github.com/ParthanahalliRehaan/0_HTML_CSS

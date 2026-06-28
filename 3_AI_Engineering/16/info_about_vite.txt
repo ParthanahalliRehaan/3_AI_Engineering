@@ -1,1 +1,0 @@
-this deployment is same as vite not like earlier ones where we use localhost ie Monolith

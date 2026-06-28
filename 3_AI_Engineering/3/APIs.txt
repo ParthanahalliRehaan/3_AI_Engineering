@@ -1,6 +1,0 @@
-https://developers.openai.com/api/docs/guides/migrate-to-responses - Why not responses API ?
-
-Before Chat Completion API there was a simpler API called as completions API.
-    [
-        These all APIs are RESTful API
-    ]

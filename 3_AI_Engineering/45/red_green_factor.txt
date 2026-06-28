@@ -1,4 +1,0 @@
-Red-Green-Refactor is the core cycle of Test-Driven Development (TDD) 
-where developers write a failing test (Red), make it pass with minimum code (Green), 
-and then improve the code's structure (Refactor). This approach ensures code is well-tested, functional, and clean, typically repeating in rapid, 
-short cycles.

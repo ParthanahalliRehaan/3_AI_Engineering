@@ -1,1 +1,0 @@
-Earlier I learnt how to create a worker in CLI but here I learnt in the GUI of web.

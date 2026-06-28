@@ -1,0 +1,80 @@
+# Code
+## 🧩 What’s Happening Here?
+The script is about **OpenAI’s new “run functions” helper** in their Node SDK.  
+Before: you had to manually write a **for loop** to check if the model wanted to call a tool, run it, push results back, and stop when finished.  
+Now: OpenAI added a **built-in helper** that does all of that automatically.
+
+---
+
+## ❓ Key Questions
+- Why did we need a for loop before?  
+  → Because the model might ask for multiple tools in sequence, and we had to manually handle that.  
+
+- What’s different now?  
+  → The SDK itself loops internally, runs the functions, and gives you the final answer.  
+
+- Why is this better?  
+  → Less code, fewer errors, easier to maintain.
+
+---
+
+## 🔍 Analogies
+- **Laundry Analogy**:  
+  Old way → You had to check every 10 minutes if the washing machine was done, then move clothes to the dryer yourself.  
+  New way → You buy a smart washer-dryer combo that automatically washes, dries, and tells you when it’s finished.  
+
+- **School Exam Analogy**:  
+  Old way → Teacher gives you a checklist: “Check if you finished question 1, then move to question 2, then stop at the end.”  
+  New way → Teacher just says: “Do the exam, I’ll tell you when you’re done.”  
+
+- **Coding Analogy**:  
+  Old way → You wrote a loop to check `finish_reason == "stop"`.  
+  New way → You just call `runFunctions()`, and it handles all that under the hood.
+
+---
+
+## 📝 Example Flow
+### Old way:
+```js
+const response = await openai.chat.completions.create({
+  model: "gpt-3.5-turbo",
+  messages,
+  tools
+});
+
+// Then you had to loop manually:
+for (...) {
+  if (response.finish_reason === "tool_calls") {
+    // run tool, push result back
+  }
+}
+```
+
+### New way:
+```js
+const runner = await openai.beta.chat.completions.runFunctions({
+  model: "gpt-3.5-turbo-1106",
+  messages,
+  functions
+});
+
+const finalContent = await runner.finalContent();
+console.log(finalContent);
+```
+
+➡️ Notice: no manual loop, no finish_reason checks. Just `runner.finalContent()`.
+
+---
+
+## ⚡ Extra Features
+- You can add **event listeners** (`runner.on("message", fn)`) to see what’s happening step by step.  
+- Instead of describing functions with `{name, description}`, you now pass the **actual function itself**.  
+- OpenAI is shifting terminology from **functions → tools**, so expect changes.
+
+---
+
+## 🎯 Recap
+- Old way = manual loop + finish_reason checks.  
+- New way = `runFunctions()` helper does it all.  
+- Benefit = cleaner, simpler, less error-prone.  
+- Analogy = smart washer-dryer that handles everything for you.  

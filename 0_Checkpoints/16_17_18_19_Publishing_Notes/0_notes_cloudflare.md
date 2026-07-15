@@ -65,7 +65,7 @@ Spins up a local dev server that mimics Cloudflare’s edge runtime.
 
 ## 🚀 Step 4: Deploy the Worker globally
 ```
-wrangler publish
+wrangler deploy
 ```
 Deploys your Worker to Cloudflare’s edge network.
 After deployment, you’ll get a URL like:

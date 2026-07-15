@@ -11,5 +11,5 @@
 ## ReelRocs(RAG Part of Scrimba)
     It has made me use Supabase.
 
-
+## Customer Support(Agentic RAG, Part of Vercel AI SDK)
 # **These project where meant for learning and notes making.**

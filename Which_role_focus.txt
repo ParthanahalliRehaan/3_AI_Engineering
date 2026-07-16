@@ -1,0 +1,63 @@
+## Basic
+### 🧾 Key Points We Covered
+- **System Designer vs. System Architect**
+  - Designer → Focuses on *what the system should do* (requirements, workflows, usability).
+  - Architect → Focuses on *how the system is built* (structure, components, technologies).
+  - Designers provide the blueprint; architects provide the technical foundation.
+
+- **Relationship Between Design & Architecture**
+  - Design isn’t a “part” of architecture, but it precedes and informs it.
+  - Architecture depends on design for direction, while design depends on architecture for feasibility.
+
+- **Infrastructure (Infra)**
+  - Refers to the **environment, tools, and systems** used to run the architecture.
+  - Examples: OS, servers, cloud platforms, Git/SSH tools, databases, networks.
+  - Infra = env + tools + systems → the foundation layer.
+
+- **System Design vs. Coding**
+  - System design is about **planning and modeling**, not writing code.
+  - Deliverables: diagrams, workflows, specifications.
+  - Coding comes later, once design and architecture are finalized.
+
+### ⚖️ Simplified Layered View
+- **System Design → Blueprint (functional requirements, workflows).**  
+- **System Architecture → Technical structure (modules, tech stack, scalability).**  
+- **Infrastructure → Environment + tools + systems (runtime foundation).**  
+- **Coding → Implementation (actual scripts, configs, programs).**
+
+---
+
+👉 In short: **System design defines what, architecture defines how, infrastructure provides where, and coding makes it real.**
+
+## More
+A **System Designer** gives you the *idea* (requirements, workflows, what the system should do), and then you as an **Engineer/Developer/Architect** implement it. But let’s sharpen that understanding:
+
+### 🧩 How It Flows
+1. **System Designer**  
+   - Defines *what* the system should achieve.  
+   - Example: “We need a way to let users log in with two GitHub accounts.”  
+
+2. **System Architect**  
+   - Decides *how* the system will be structured technically.  
+   - Example: “We’ll use SSH key pairs, host aliases, and GitHub CLI contexts.”  
+
+3. **Engineer/Developer (You)**  
+   - Actually *builds and configures* it.  
+   - Example: Writing the `~/.ssh/config`, generating keys, testing with `git push`.
+
+---
+
+### ⚖️ Simplified View
+- **Designer → Idea / Blueprint**  
+- **Architect → Technical Plan**  
+- **Engineer → Implementation (coding, configs, deployment)**  
+
+So, the designer hands over the “idea,” but it’s more structured than just a vague thought — it’s a **functional specification**. You then translate that into working code and systems.
+
+---
+
+👉 Since you’re in **GenAI + JS**, your role is closer to **Engineer/Architect**:  
+- You’ll take design ideas (like “we want an AI chatbot in our app”)  
+- Architect the integration (choose API, handle infra, plan workflows)  
+- Implement it in code (React + JS + GenAI SDKs).  
+
